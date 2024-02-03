@@ -54,8 +54,6 @@ func (r *DeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	log := log.FromContext(ctx)
 
 	deploy := &appsv1.Deployment{}
-	service := &corev1.Service{}
-	ingress := &netv1.Ingress{}
 
 	nameSpace := req.Namespace
 
@@ -99,42 +97,6 @@ func (r *DeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 				return ctrl.Result{}, nil
 			}
 			log.Error(err, "Failed to create ingress")
-		}
-	}
-
-	// Check if Service is deleted
-	err = r.Get(ctx, req.NamespacedName, service)
-	if err != nil {
-		if apierrors.IsNotFound(err) {
-			// re-create svc
-			fmt.Println("Re-creating Service")
-			_, err := r.createService(deploy, ctx)
-			if err != nil {
-				if apierrors.IsAlreadyExists(err) {
-					return ctrl.Result{}, nil
-				}
-				log.Error(err, "Failed to create service")
-			}
-		} else {
-			log.Error(err, "Failed to get svc")
-		}
-	}
-
-	// Check if Svc is deleted
-	err = r.Get(ctx, req.NamespacedName, ingress)
-	if err != nil {
-		if apierrors.IsNotFound(err) {
-			// re-create ingress
-			fmt.Println("Re-creating Ingress")
-			_, err := r.createService(deploy, ctx)
-			if err != nil {
-				if apierrors.IsAlreadyExists(err) {
-					return ctrl.Result{}, nil
-				}
-				log.Error(err, "Failed to create ingress")
-			}
-		} else {
-			log.Error(err, "Failed to get ingress")
 		}
 	}
 
