@@ -34,6 +34,7 @@ import (
 
 	appscontroller "github.com/thakurnishu/sik-controller-kubebuilder/internal/controller/apps"
 	corecontroller "github.com/thakurnishu/sik-controller-kubebuilder/internal/controller/core"
+	networkingcontroller "github.com/thakurnishu/sik-controller-kubebuilder/internal/controller/networking"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -100,6 +101,13 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Service")
+		os.Exit(1)
+	}
+	if err = (&networkingcontroller.IngressReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Ingress")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

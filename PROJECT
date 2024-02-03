@@ -19,4 +19,10 @@ resources:
   kind: Service
   path: k8s.io/api/core/v1
   version: v1
+- controller: true
+  domain: k8s.io
+  group: networking
+  kind: Ingress
+  path: k8s.io/api/networking/v1
+  version: v1
 version: "3"
