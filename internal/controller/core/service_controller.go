@@ -58,7 +58,7 @@ func (r *ServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	svc := &corev1.Service{}
 	nameSpace := req.Namespace
 	svcName := req.Name
-	deployName := strings.Trim(svcName, "-svc")
+	deployName := strings.TrimSuffix(svcName, "-svc")
 
 	config := ctrl.GetConfigOrDie()
 	clientSet, err := kubernetes.NewForConfig(config)
@@ -107,8 +107,6 @@ func (r *ServiceReconciler) reCreateService(ctx context.Context, deploy *appsv1.
 	log.Info(fmt.Sprintf("Pod Template: %+v", podTemplate))
 	log.Info(fmt.Sprintf("Container: %+v", container))
 	log.Info(fmt.Sprintf("Port Info: %+v", portInfo))
-	log.Info(fmt.Sprintf("Kind: %+v", deploy.Kind))
-	log.Info(fmt.Sprintf("API Version: %+v", deploy.APIVersion))
 
 	svc := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
